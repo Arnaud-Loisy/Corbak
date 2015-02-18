@@ -1,0 +1,56 @@
+module corbak{
+
+typedef Object IOR;
+
+struct Date {
+    short year;
+    short month;
+    short day;
+	short hour;
+	short minute;
+	short seconde;
+};
+
+//Block exceptions
+exception droitsInsufisants { string raison; short id; };
+exception certificatInvalide { string raison; short id; };
+exception authentificationEchouee { string raison; short id; };
+
+struct Signature {
+	string hash;
+};
+struct Certificat {
+	Date dateExpiration;
+	IOR ACemmetrice;
+	string pubClef;
+	Signature sign;
+};
+
+struct Message {       
+	Signature sign;		   
+	string text;		   
+	boolean estChiffre;    
+};
+
+interface AV { 
+	void revocCertif(in IOR client, in Certificat certif);
+	void verification (in Certificat certificat) raises (certificatInvalide);
+};
+
+interface AC {	
+	void revocCertif(in Certificat certif) raises (certificatInvalide);
+	Certificat generationCertificat(in string PubKey, in Date dateExpiration, in IOR ACemmetrice , in Signature sign); 
+	void verification(in Signature sign);
+};
+
+interface AE{
+	void revocCertif(in string login, in string password, in Certificat certif) raises (droitsInsufisants ,certificatInvalide);
+	void genererCertificat(in string PubKey, in Date dateExpiration, in IOR ACemmetrice , in Signature sign);
+};
+
+interface Client{		
+	void envoyerMessage (in Message msg, in Certificat certif);
+	void envoyer (in Certificat certif);
+};
+
+};
