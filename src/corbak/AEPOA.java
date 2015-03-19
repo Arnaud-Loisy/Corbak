@@ -33,7 +33,9 @@ public abstract class AEPOA extends org.omg.PortableServer.Servant
             final org.omg.CORBA.portable.ResponseHandler handler)
     {
 
-        if (opName.equals("genererCertificat")) {
+        if (opName.equals("authentification")) {
+                return _invoke_authentification(_is, handler);
+        } else if (opName.equals("genererCertificat")) {
                 return _invoke_genererCertificat(_is, handler);
         } else if (opName.equals("revocCertif")) {
                 return _invoke_revocCertif(_is, handler);
@@ -43,6 +45,28 @@ public abstract class AEPOA extends org.omg.PortableServer.Servant
     }
 
     // helper methods
+    private org.omg.CORBA.portable.OutputStream _invoke_authentification(
+            final org.omg.CORBA.portable.InputStream _is,
+            final org.omg.CORBA.portable.ResponseHandler handler) {
+        org.omg.CORBA.portable.OutputStream _output;
+        String arg0_in = _is.read_string();
+        String arg1_in = _is.read_string();
+
+        try
+        {
+            authentification(arg0_in, arg1_in);
+
+            _output = handler.createReply();
+
+        }
+        catch (corbak.authentificationEchouee _exception)
+        {
+            _output = handler.createExceptionReply();
+            corbak.authentificationEchoueeHelper.write(_output,_exception);
+        }
+        return _output;
+    }
+
     private org.omg.CORBA.portable.OutputStream _invoke_revocCertif(
             final org.omg.CORBA.portable.InputStream _is,
             final org.omg.CORBA.portable.ResponseHandler handler) {
