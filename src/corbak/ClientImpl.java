@@ -4,7 +4,7 @@ import java.util.Date;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 
-public class Client1 {
+public class ClientImpl {
 
 public static AE monAE;
 public static Client monCorrespondant;
@@ -50,7 +50,8 @@ public void envoyerMessage (Message msg, Certificat certif){
         String log = in.readLine();
         System.out.println("Password Client ?");
         String pass = in.readLine();
-        monAE.authentification(log,pass);
+        short returned = monAE.authentification(log,pass);
+        System.out.println(returned);
         monCertif = monAE.genererCertificat("$1");
         
        while(true) {
@@ -80,8 +81,8 @@ public void envoyerMessage (Message msg, Certificat certif){
            String message = in.readLine();
            Signature sign = new Signature("hash");
            Message msg = new Message(sign,message,false) ;
-           
-           monCorrespondant.envoyerMessage(msg, monCertif);;
+           monCorrespondant.envoyer(monCertif);
+           monCorrespondant.envoyerMessage(msg, monCertif);
            
        }
         

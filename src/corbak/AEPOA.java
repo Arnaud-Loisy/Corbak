@@ -54,9 +54,10 @@ public abstract class AEPOA extends org.omg.PortableServer.Servant
 
         try
         {
-            authentification(arg0_in, arg1_in);
+            short _arg_result = authentification(arg0_in, arg1_in);
 
             _output = handler.createReply();
+            _output.write_short(_arg_result);
 
         }
         catch (corbak.authentificationEchouee _exception)

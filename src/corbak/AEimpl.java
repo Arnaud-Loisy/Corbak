@@ -9,7 +9,7 @@ import org.omg.CosNaming.NamingContext;
 import org.omg.PortableServer.POA;
 import org.omg.PortableServer.POAHelper;
 
-public class AEimpl {
+public class AEimpl extends AEPOA{
 
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
@@ -26,10 +26,10 @@ try {
 
     // Creation du servant
     //*********************
-    //AEimpl monEuro = new AEimpl();
+    AEimpl monAE = new AEimpl();
 
     // Activer le servant au sein du POA et recuperer son ID
-   // byte[] monEuroId = rootPOA.activate_object(monEuro);
+    byte[] monEuroId = rootPOA.activate_object(monAE);
 
     // Activer le POA manager
     rootPOA.the_POAManager().activate();
@@ -48,23 +48,41 @@ try {
     nameToRegister[0] = new org.omg.CosNaming.NameComponent(nomObj,"");
 
     // Enregistrement de l'objet CORBA dans le service de noms
-   // nameRoot.rebind(nameToRegister,rootPOA.servant_to_reference(monEuro));
+    nameRoot.rebind(nameToRegister,rootPOA.servant_to_reference(monAE));
     System.out.println("==> Nom '"+ nomObj + "' est enregistre dans le service de noms.");
 
-   // String IORServant = orb.object_to_string(rootPOA.servant_to_reference(monEuro));
+    String IORServant = orb.object_to_string(rootPOA.servant_to_reference(monAE));
     System.out.println("L'objet possede la reference suivante :");
-    //System.out.println(IORServant);
+    System.out.println(IORServant);
 
+    //DEBUG
+        nomObj = in.readLine();
+        
 	}catch (Exception e) {
 		e.printStackTrace();
 	}
+
+
 }
 	
-	public int authentification (String login, String password){
+	public short authentification (String login, String password){
 		
 		
-		return 0;
+		return 1;
 		
+	}
+
+	@Override
+	public void revocCertif(String login, String password, Certificat certif)
+			throws droitsInsufisants, certificatInvalide {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public Certificat genererCertificat(String PubKey) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 	
 }

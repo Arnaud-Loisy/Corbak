@@ -65,10 +65,10 @@ public class AEPOATie extends AEPOA
     /**
      * Operation authentification
      */
-    public void authentification(String login, String password)
+    public short authentification(String login, String password)
         throws corbak.authentificationEchouee
     {
-        _tie.authentification( login,  password);
+        return _tie.authentification( login,  password);
     }
 
     /**

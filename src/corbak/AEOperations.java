@@ -10,7 +10,7 @@ public interface AEOperations
     /**
      * Operation authentification
      */
-    public void authentification(String login, String password)
+    public short authentification(String login, String password)
         throws corbak.authentificationEchouee;
 
     /**
@@ -21,8 +21,7 @@ public interface AEOperations
 
     /**
      * Operation genererCertificat
-     * @return 
      */
-    public Certificat genererCertificat(String PubKey);
+    public corbak.Certificat genererCertificat(String PubKey);
 
 }

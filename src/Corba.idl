@@ -44,7 +44,7 @@ interface AC {
 };
 
 interface AE{
-	void authentification(in string login, in string password) raises (authentificationEchouee);
+	short authentification(in string login, in string password) raises (authentificationEchouee);
 	void revocCertif(in string login, in string password, in Certificat certif) raises (droitsInsufisants ,certificatInvalide);
 	Certificat genererCertificat(in string PubKey);
 };
