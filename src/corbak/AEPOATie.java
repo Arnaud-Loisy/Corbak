@@ -83,9 +83,9 @@ public class AEPOATie extends AEPOA
     /**
      * Operation genererCertificat
      */
-    public void genererCertificat(String PubKey, corbak.Date dateExpiration, org.omg.CORBA.Object ACemmetrice, corbak.Signature sign)
+    public corbak.Certificat genererCertificat(String PubKey)
     {
-        _tie.genererCertificat( PubKey,  dateExpiration,  ACemmetrice,  sign);
+        return _tie.genererCertificat( PubKey);
     }
 
 }

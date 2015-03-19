@@ -100,13 +100,11 @@ public abstract class AEPOA extends org.omg.PortableServer.Servant
             final org.omg.CORBA.portable.ResponseHandler handler) {
         org.omg.CORBA.portable.OutputStream _output;
         String arg0_in = _is.read_string();
-        corbak.Date arg1_in = corbak.DateHelper.read(_is);
-        org.omg.CORBA.Object arg2_in = corbak.IORHelper.read(_is);
-        corbak.Signature arg3_in = corbak.SignatureHelper.read(_is);
 
-        genererCertificat(arg0_in, arg1_in, arg2_in, arg3_in);
+        corbak.Certificat _arg_result = genererCertificat(arg0_in);
 
         _output = handler.createReply();
+        corbak.CertificatHelper.write(_output,_arg_result);
 
         return _output;
     }

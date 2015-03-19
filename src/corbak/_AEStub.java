@@ -143,7 +143,7 @@ public class _AEStub extends org.omg.CORBA.portable.ObjectImpl
     /**
      * Operation genererCertificat
      */
-    public void genererCertificat(String PubKey, corbak.Date dateExpiration, org.omg.CORBA.Object ACemmetrice, corbak.Signature sign)
+    public corbak.Certificat genererCertificat(String PubKey)
     {
         while(true)
         {
@@ -154,11 +154,9 @@ public class _AEStub extends org.omg.CORBA.portable.ObjectImpl
                 {
                     org.omg.CORBA.portable.OutputStream _output = this._request("genererCertificat",true);
                     _output.write_string(PubKey);
-                    corbak.DateHelper.write(_output,dateExpiration);
-                    corbak.IORHelper.write(_output,ACemmetrice);
-                    corbak.SignatureHelper.write(_output,sign);
                     _input = this._invoke(_output);
-                    return;
+                    corbak.Certificat _arg_ret = corbak.CertificatHelper.read(_input);
+                    return _arg_ret;
                 }
                 catch(org.omg.CORBA.portable.RemarshalException _exception)
                 {
@@ -182,8 +180,7 @@ public class _AEStub extends org.omg.CORBA.portable.ObjectImpl
                 corbak.AEOperations _self = (corbak.AEOperations) _so.servant;
                 try
                 {
-                    _self.genererCertificat( PubKey,  dateExpiration,  ACemmetrice,  sign);
-                    return;
+                    return _self.genererCertificat( PubKey);
                 }
                 finally
                 {

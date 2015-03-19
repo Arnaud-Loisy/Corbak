@@ -1,6 +1,5 @@
 package corbak;
 
-import java.util.Date;
 /**
  * Interface definition : AC
  * 

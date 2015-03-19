@@ -21,7 +21,8 @@ public interface AEOperations
 
     /**
      * Operation genererCertificat
+     * @return 
      */
-    public void genererCertificat(String PubKey, corbak.Date dateExpiration, org.omg.CORBA.Object ACemmetrice, corbak.Signature sign);
+    public Certificat genererCertificat(String PubKey);
 
 }
