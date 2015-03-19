@@ -21,6 +21,63 @@ public class _AEStub extends org.omg.CORBA.portable.ObjectImpl
     private final static Class _opsClass = corbak.AEOperations.class;
 
     /**
+     * Operation authentification
+     */
+    public void authentification(String login, String password)
+        throws corbak.authentificationEchouee
+    {
+        while(true)
+        {
+            if (!this._is_local())
+            {
+                org.omg.CORBA.portable.InputStream _input = null;
+                try
+                {
+                    org.omg.CORBA.portable.OutputStream _output = this._request("authentification",true);
+                    _output.write_string(login);
+                    _output.write_string(password);
+                    _input = this._invoke(_output);
+                    return;
+                }
+                catch(org.omg.CORBA.portable.RemarshalException _exception)
+                {
+                    continue;
+                }
+                catch(org.omg.CORBA.portable.ApplicationException _exception)
+                {
+                    String _exception_id = _exception.getId();
+                    if (_exception_id.equals(corbak.authentificationEchoueeHelper.id()))
+                    {
+                        throw corbak.authentificationEchoueeHelper.read(_exception.getInputStream());
+                    }
+
+                    throw new org.omg.CORBA.UNKNOWN("Unexpected User Exception: "+ _exception_id);
+                }
+                finally
+                {
+                    this._releaseReply(_input);
+                }
+            }
+            else
+            {
+                org.omg.CORBA.portable.ServantObject _so = _servant_preinvoke("authentification",_opsClass);
+                if (_so == null)
+                   continue;
+                corbak.AEOperations _self = (corbak.AEOperations) _so.servant;
+                try
+                {
+                    _self.authentification( login,  password);
+                    return;
+                }
+                finally
+                {
+                    _servant_postinvoke(_so);
+                }
+            }
+        }
+    }
+
+    /**
      * Operation revocCertif
      */
     public void revocCertif(String login, String password, corbak.Certificat certif)

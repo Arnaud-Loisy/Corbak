@@ -63,6 +63,15 @@ public class AEPOATie extends AEPOA
     }
 
     /**
+     * Operation authentification
+     */
+    public void authentification(String login, String password)
+        throws corbak.authentificationEchouee
+    {
+        _tie.authentification( login,  password);
+    }
+
+    /**
      * Operation revocCertif
      */
     public void revocCertif(String login, String password, corbak.Certificat certif)
