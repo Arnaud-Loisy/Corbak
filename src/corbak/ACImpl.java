@@ -17,16 +17,13 @@ public class ACImpl {
 	
 	}
 	
-	ArrayList listAV;
 	ArrayList<Certificat> listCert;
 	org.omg.CORBA.ORB orb;
 	
 	public ACImpl (org.omg.CORBA.ORB orb)
 	{
-		listAV=new ArrayList();
 		listCert = new ArrayList<Certificat>();
 		this.orb=orb;
-		
 	}
 	
 	public Certificat generateCertificat(String PubKey, Date dateExpiration, org.omg.CORBA.Object ACemmetrice, Signature sign)
