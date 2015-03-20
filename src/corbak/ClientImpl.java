@@ -51,9 +51,9 @@ public void envoyerMessage (Message msg, Certificat certif){
         System.out.println("Password Client ?");
         String pass = in.readLine();
         short returned = monAE.authentification(log,pass);
-        System.out.println(returned);
+        if (returned == 1) System.out.println("#Login successful");
         monCertif = monAE.genererCertificat("$1");
-        
+        System.out.println("#Certificat généré et récupéré.");
        while(true) {
     	   
     	// Saisie du nom de l'objet (si utilisation du service de nommage)

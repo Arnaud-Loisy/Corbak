@@ -55,8 +55,20 @@ try {
     System.out.println("L'objet possede la reference suivante :");
     System.out.println(IORServant);
 
+    // Lancement de l'ORB et mise en attente de requete
+    //**************************************************
+    
+    
+    
+    Thread t = new Thread(new Runnable(){
+    			public void run(){
+    				orb.run();
+    			}
+    		});
+    t.start();
+    
     //DEBUG
-        nomObj = in.readLine();
+        //nomObj = in.readLine();
         
 	}catch (Exception e) {
 		e.printStackTrace();
@@ -81,7 +93,32 @@ try {
 
 	@Override
 	public Certificat genererCertificat(String PubKey) {
-		// TODO Auto-generated method stub
+		try{
+		AC monAC;
+		
+		org.omg.CORBA.ORB orb = org.omg.CORBA.ORB.init();
+        String idObj = "AC1";
+
+        // Recuperation du naming service
+        org.omg.CosNaming.NamingContext nameRoot =
+        		org.omg.CosNaming.NamingContextHelper.narrow(orb.resolve_initial_references("NameService"));
+
+        // Construction du nom a rechercher
+        org.omg.CosNaming.NameComponent[] nameToFind = new org.omg.CosNaming.NameComponent[1];
+         nameToFind[0] = new org.omg.CosNaming.NameComponent(idObj,"");
+
+        // Recherche aupres du naming service
+        org.omg.CORBA.Object distantAC = nameRoot.resolve(nameToFind);
+        System.out.println("Objet '" + idObj + "' trouve aupres du service de noms. IOR de l'objet :");
+        System.out.println(orb.object_to_string(distantAC));
+
+        // Utilisation directe de l'IOR (SAUF utilisation du service de nommage)
+       // org.omg.CORBA.Object distantEuro = orb.string_to_object("IOR:000000000000001b49444c3a436f6e766572746973736575722f4575726f3a312e30000000000001000000000000007c000102000000000d3137322e31362e39362e35340000cb630000001c00564201000000022f0020200000000400000000000002925225d3ea00000003564953030000000500070801ff000000000000000000000800000000564953000000000100000018000000000001000100000001050100010001010900000000");
+        // Casting de l'objet CORBA au type convertisseur euro
+        monAC = ACHelper.narrow(distantAC);
+		}catch(Exception e){
+			e.printStackTrace();
+		}
 		return null;
 	}
 	
