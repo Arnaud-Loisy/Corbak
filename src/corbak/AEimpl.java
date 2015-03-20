@@ -1,6 +1,6 @@
 package corbak;
 
-//import EuroImpl;
+import java.security.*;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
@@ -116,6 +116,8 @@ try {
        // org.omg.CORBA.Object distantEuro = orb.string_to_object("IOR:000000000000001b49444c3a436f6e766572746973736575722f4575726f3a312e30000000000001000000000000007c000102000000000d3137322e31362e39362e35340000cb630000001c00564201000000022f0020200000000400000000000002925225d3ea00000003564953030000000500070801ff000000000000000000000800000000564953000000000100000018000000000001000100000001050100010001010900000000");
         // Casting de l'objet CORBA au type convertisseur euro
         monAC = ACHelper.narrow(distantAC);
+        Signature sig = new Signature(PubKey);
+        monAC.generationCertificat(PubKey, null, null,sig);
 		}catch(Exception e){
 			e.printStackTrace();
 		}

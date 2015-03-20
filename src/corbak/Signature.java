@@ -24,7 +24,8 @@ public final class Signature implements org.omg.CORBA.portable.IDLEntity
      */
     public Signature(String hash)
     {
-        this.hash = hash;
+    	
+        this.hash = Integer.toString(hash.hashCode());
     }
 
 }

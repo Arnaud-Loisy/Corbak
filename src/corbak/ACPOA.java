@@ -72,7 +72,7 @@ public abstract class ACPOA extends org.omg.PortableServer.Servant
         org.omg.CORBA.portable.OutputStream _output;
         String arg0_in = _is.read_string();
         corbak.Date arg1_in = corbak.DateHelper.read(_is);
-        org.omg.CORBA.Object arg2_in = corbak.IORHelper.read(_is);
+        org.omg.CORBA.Object arg2_in = _is.read_Object();
         corbak.Signature arg3_in = corbak.SignatureHelper.read(_is);
 
         corbak.Certificat _arg_result = generationCertificat(arg0_in, arg1_in, arg2_in, arg3_in);

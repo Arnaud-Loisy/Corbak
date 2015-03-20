@@ -4,7 +4,7 @@ import java.util.Date;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 
-public class ClientImpl {
+public class ClientImpl extends ClientPOA{
 
 public static AE monAE;
 public static Client monCorrespondant;
@@ -93,6 +93,13 @@ public void envoyerMessage (Message msg, Certificat certif){
 	}
 
 }
+
+
+	@Override
+	public void envoyer(Certificat certif) {
+		// TODO Auto-generated method stub
+		
+	}
 	
 
 }
