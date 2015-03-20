@@ -9,11 +9,11 @@ import org.omg.CosNaming.NamingContext;
 import org.omg.PortableServer.POA;
 import org.omg.PortableServer.POAHelper;
 
-public class AEimpl extends AEPOA{
+public class AEImpl extends AEPOA{
 
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
-System.out.println("AE1");
+System.out.println("##AE##");
 try {
     // Intialisation de l'ORB
     //************************
@@ -26,10 +26,10 @@ try {
 
     // Creation du servant
     //*********************
-    AEimpl monAE = new AEimpl();
+    AEImpl monAE = new AEImpl();
 
     // Activer le servant au sein du POA et recuperer son ID
-    byte[] monEuroId = rootPOA.activate_object(monAE);
+    byte[] monAEId = rootPOA.activate_object(monAE);
 
     // Activer le POA manager
     rootPOA.the_POAManager().activate();
@@ -94,14 +94,15 @@ try {
 	@Override
 	public Certificat genererCertificat(String PubKey) {
 		try{
+			
+			System.out.println("#DEBUG1");
 		AC monAC;
 		
 		org.omg.CORBA.ORB orb = org.omg.CORBA.ORB.init();
         String idObj = "AC1";
-
+/*
         // Recuperation du naming service
-        org.omg.CosNaming.NamingContext nameRoot =
-        		org.omg.CosNaming.NamingContextHelper.narrow(orb.resolve_initial_references("NameService"));
+        org.omg.CosNaming.NamingContext nameRoot = org.omg.CosNaming.NamingContextHelper.narrow(orb.resolve_initial_references("NameService"));
 
         // Construction du nom a rechercher
         org.omg.CosNaming.NameComponent[] nameToFind = new org.omg.CosNaming.NameComponent[1];
@@ -111,13 +112,13 @@ try {
         org.omg.CORBA.Object distantAC = nameRoot.resolve(nameToFind);
         System.out.println("Objet '" + idObj + "' trouve aupres du service de noms. IOR de l'objet :");
         System.out.println(orb.object_to_string(distantAC));
-
+*/
         // Utilisation directe de l'IOR (SAUF utilisation du service de nommage)
-       // org.omg.CORBA.Object distantEuro = orb.string_to_object("IOR:000000000000001b49444c3a436f6e766572746973736575722f4575726f3a312e30000000000001000000000000007c000102000000000d3137322e31362e39362e35340000cb630000001c00564201000000022f0020200000000400000000000002925225d3ea00000003564953030000000500070801ff000000000000000000000800000000564953000000000100000018000000000001000100000001050100010001010900000000");
+        org.omg.CORBA.Object distantAC = orb.string_to_object("IOR:000000000000001249444C3A636F7262616B2F41433A312E3000000000000001000000000000006400010200000000103133302E3132302E3231322E31303500C0D0000000000014004F4F01BCCE33374C010000504F41FE5F39E36900000001000000010000002400000000100204E4000000030001000F0001000100010020000101090000000100010100");
         // Casting de l'objet CORBA au type convertisseur euro
         monAC = ACHelper.narrow(distantAC);
         Signature sig = new Signature(PubKey);
-        monAC.generationCertificat(PubKey, null, null,sig);
+        monAC.generationCertificat(PubKey, null, monAC,sig);
 		}catch(Exception e){
 			e.printStackTrace();
 		}
