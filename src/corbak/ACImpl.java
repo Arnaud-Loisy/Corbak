@@ -130,7 +130,12 @@ public class ACImpl extends ACPOA{
 
 	@Override
 	public void verification(Signature sign) {
-		// TODO Auto-generated method stub
-
+		for(int i=0;i<listCert.size();i++){;
+			if (sign.hash.equals(listCert.get(i).sign.hash)) {
+				System.out.println("Valide");
+				return;
+			}
+		}
+		System.out.println("Invalide");
 	}
 }
