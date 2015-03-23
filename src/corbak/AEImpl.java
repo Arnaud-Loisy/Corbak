@@ -1,7 +1,6 @@
 package corbak;
 
 import java.security.*;
-
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 
@@ -11,6 +10,8 @@ import org.omg.PortableServer.POAHelper;
 
 public class AEImpl extends AEPOA{
 
+	public static AC monAC;
+	
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
 System.out.println("##AE##");
@@ -24,9 +25,10 @@ try {
     // Recuperation du POA
     POA rootPOA = POAHelper.narrow(orb.resolve_initial_references("RootPOA"));
 
-    // Creation du servant
+    // Creation des servants
     //*********************
     AEImpl monAE = new AEImpl();
+    
 
     // Activer le servant au sein du POA et recuperer son ID
     byte[] monAEId = rootPOA.activate_object(monAE);
@@ -44,31 +46,50 @@ try {
     org.omg.CosNaming.NameComponent[] nameToRegister = new org.omg.CosNaming.NameComponent[1];
     System.out.println("Sous quel nom voulez-vous enregistrer l'objet Corba ?");
     BufferedReader in = new BufferedReader(new InputStreamReader(System.in));
-    String nomObj = in.readLine();
-    nameToRegister[0] = new org.omg.CosNaming.NameComponent(nomObj,"");
+    String nomAE = in.readLine();
+    nameToRegister[0] = new org.omg.CosNaming.NameComponent(nomAE,"");
 
     // Enregistrement de l'objet CORBA dans le service de noms
     nameRoot.rebind(nameToRegister,rootPOA.servant_to_reference(monAE));
-    System.out.println("==> Nom '"+ nomObj + "' est enregistre dans le service de noms.");
+    System.out.println("==> Nom '"+ nomAE + "' est enregistre dans le service de noms.");
 
     String IORServant = orb.object_to_string(rootPOA.servant_to_reference(monAE));
     System.out.println("L'objet possede la reference suivante :");
     System.out.println(IORServant);
+    
+    System.out.println("Attribution AC ... ("+nomAE+")");
+    String AC = "AC1";
+    switch(nomAE){
+    case "AE1": AC= "AC1";
+    break;
+    case "AE2": AC= "AC2";
+    break;
+    case "AE3": AC= "AC3";
+    break;
+    case "AE4": AC= "AC4";
+    break;
+    default : AC="AC1";
+    break; 
+    }
+    
+    System.out.println("demande de ratachement à l'"+AC+"...");
+    
+ // Construction du nom a rechercher
+    org.omg.CosNaming.NameComponent[] nameToFind = new org.omg.CosNaming.NameComponent[1];
+     nameToFind[0] = new org.omg.CosNaming.NameComponent(AC,"");
 
-    // Lancement de l'ORB et mise en attente de requete
-    //**************************************************
-    
-    
+    // Recherche aupres du naming service
+    org.omg.CORBA.Object distantAC = nameRoot.resolve(nameToFind);
+    System.out.println("Objet '" + AC + "' trouve aupres du service de noms. IOR de l'objet :");
+    System.out.println(orb.object_to_string(distantAC));
+    monAC = ACHelper.narrow(distantAC);
     
     Thread t = new Thread(new Runnable(){
-    			public void run(){
-    				orb.run();
-    			}
-    		});
-    t.start();
-    
-    //DEBUG
-        //nomObj = in.readLine();
+		public void run(){
+			orb.run();
+		}
+	});
+	t.start();
         
 	}catch (Exception e) {
 		e.printStackTrace();
@@ -79,7 +100,7 @@ try {
 	
 	public short authentification (String login, String password){
 		
-		
+		System.out.println(login+" demande à s'authentifier : OK");
 		return 1;
 		
 	}
@@ -93,36 +114,25 @@ try {
 
 	@Override
 	public Certificat genererCertificat(String PubKey) {
+		Certificat cert=null;
 		try{
 			
 			System.out.println("#DEBUG1");
-		AC monAC;
-		
-		org.omg.CORBA.ORB orb = org.omg.CORBA.ORB.init();
-        String idObj = "AC1";
-/*
-        // Recuperation du naming service
-        org.omg.CosNaming.NamingContext nameRoot = org.omg.CosNaming.NamingContextHelper.narrow(orb.resolve_initial_references("NameService"));
-
-        // Construction du nom a rechercher
-        org.omg.CosNaming.NameComponent[] nameToFind = new org.omg.CosNaming.NameComponent[1];
-         nameToFind[0] = new org.omg.CosNaming.NameComponent(idObj,"");
-
-        // Recherche aupres du naming service
-        org.omg.CORBA.Object distantAC = nameRoot.resolve(nameToFind);
-        System.out.println("Objet '" + idObj + "' trouve aupres du service de noms. IOR de l'objet :");
-        System.out.println(orb.object_to_string(distantAC));
-*/
-        // Utilisation directe de l'IOR (SAUF utilisation du service de nommage)
-        org.omg.CORBA.Object distantAC = orb.string_to_object("IOR:000000000000001249444C3A636F7262616B2F41433A312E3000000000000001000000000000006400010200000000103133302E3132302E3231322E31303500C0D0000000000014004F4F01BCCE33374C010000504F41FE5F39E36900000001000000010000002400000000100204E4000000030001000F0001000100010020000101090000000100010100");
-        // Casting de l'objet CORBA au type convertisseur euro
-        monAC = ACHelper.narrow(distantAC);
-        Signature sig = new Signature(PubKey);
-        monAC.generationCertificat(PubKey, null, monAC,sig);
+			
+		String hash = Integer.toString(PubKey.hashCode());
+		System.out.println("#DEBUG1 hash =>"+hash);
+        Signature sig = new Signature(hash);
+        System.out.println("#DEBUG1 Sig.hash =>"+sig.hash);
+        Date expir = new Date((short)2099,(short)1,(short)1,(short)1,(short)1,(short)1);
+        System.out.println("#DEBUG2");
+        cert = monAC.generationCertificat(PubKey, expir, monAC,sig);
+        System.out.println("#DEBUG3");
+        
 		}catch(Exception e){
 			e.printStackTrace();
 		}
-		return null;
+		return cert;
+		
 	}
 	
 }

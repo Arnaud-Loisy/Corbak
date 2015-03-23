@@ -25,6 +25,10 @@ public class ACImpl extends ACPOA{
 		
 			System.out.println("##AC##");
 			try {
+				
+				//initialisation de la liste.
+				
+				listCert = new ArrayList<Certificat>();
 				// Intialisation de l'ORB
 				//************************
 				final org.omg.CORBA.ORB orb = org.omg.CORBA.ORB.init(args,null);
@@ -36,7 +40,7 @@ public class ACImpl extends ACPOA{
 
 				// Creation du servant
 				//*********************
-				ACImpl monAC = new ACImpl(orb);
+				ACImpl monAC = new ACImpl();
 
 				// Activer le servant au sein du POA et recuperer son ID
 				byte[] monACId = rootPOA.activate_object(monAC);
@@ -91,10 +95,10 @@ public class ACImpl extends ACPOA{
 	
 
 
-	public ACImpl (org.omg.CORBA.ORB orb)
+	public ACImpl ()
 	{
 		listCert = new ArrayList<Certificat>();
-		this.orb=orb;
+		
 	}
 
 

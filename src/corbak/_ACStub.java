@@ -91,7 +91,7 @@ public class _ACStub extends org.omg.CORBA.portable.ObjectImpl
                     org.omg.CORBA.portable.OutputStream _output = this._request("generationCertificat",true);
                     _output.write_string(PubKey);
                     corbak.DateHelper.write(_output,dateExpiration);
-                    _output.write_Object(ACemmetrice);
+                    corbak.IORHelper.write(_output,ACemmetrice);
                     corbak.SignatureHelper.write(_output,sign);
                     _input = this._invoke(_output);
                     corbak.Certificat _arg_ret = corbak.CertificatHelper.read(_input);
