@@ -10,7 +10,7 @@ public interface AEOperations
     /**
      * Operation authentification
      */
-    public short authentification(String login, String password)
+    public boolean authentification(String login, String password)
         throws corbak.authentificationEchouee;
 
     /**

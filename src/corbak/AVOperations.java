@@ -15,7 +15,7 @@ public interface AVOperations
     /**
      * Operation verification
      */
-    public void verification(corbak.Certificat certificat)
+    public boolean verification(corbak.Certificat certificat)
         throws corbak.certificatInvalide;
 
 }

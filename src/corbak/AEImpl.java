@@ -98,10 +98,10 @@ try {
 
 }
 	
-	public short authentification (String login, String password){
+	public boolean authentification (String login, String password){
 		
 		System.out.println(login+" demande à s'authentifier : OK");
-		return 1;
+		return true;
 		
 	}
 

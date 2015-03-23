@@ -82,9 +82,9 @@ public class ACPOATie extends ACPOA
     /**
      * Operation verification
      */
-    public void verification(corbak.Signature sign)
+    public boolean verification(corbak.Signature sign)
     {
-        _tie.verification( sign);
+        return _tie.verification( sign);
     }
 
 }

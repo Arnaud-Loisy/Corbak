@@ -89,9 +89,10 @@ public abstract class ACPOA extends org.omg.PortableServer.Servant
         org.omg.CORBA.portable.OutputStream _output;
         corbak.Signature arg0_in = corbak.SignatureHelper.read(_is);
 
-        verification(arg0_in);
+        boolean _arg_result = verification(arg0_in);
 
         _output = handler.createReply();
+        _output.write_boolean(_arg_result);
 
         return _output;
     }

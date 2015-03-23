@@ -23,7 +23,7 @@ public class _AEStub extends org.omg.CORBA.portable.ObjectImpl
     /**
      * Operation authentification
      */
-    public short authentification(String login, String password)
+    public boolean authentification(String login, String password)
         throws corbak.authentificationEchouee
     {
         while(true)
@@ -37,7 +37,7 @@ public class _AEStub extends org.omg.CORBA.portable.ObjectImpl
                     _output.write_string(login);
                     _output.write_string(password);
                     _input = this._invoke(_output);
-                    short _arg_ret = _input.read_short();
+                    boolean _arg_ret = _input.read_boolean();
                     return _arg_ret;
                 }
                 catch(org.omg.CORBA.portable.RemarshalException _exception)

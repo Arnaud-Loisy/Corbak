@@ -4,6 +4,7 @@ import java.util.Date;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 
+import org.omg.CosNaming.NameComponent;
 import org.omg.CosNaming.NamingContext;
 import org.omg.PortableServer.POA;
 import org.omg.PortableServer.POAHelper;
@@ -11,9 +12,11 @@ import org.omg.PortableServer.POAHelper;
 public class ClientImpl extends ClientPOA{
 
 public static AE monAE;
+public static AV monAV;
 public static Client monCorrespondant;
 public static Certificat monCertif;
 public void envoyerMessage (Message msg, Certificat certif){
+	
 	System.out.println(msg.text);
 }
 
@@ -38,25 +41,33 @@ public void envoyerMessage (Message msg, Certificat certif){
         		org.omg.CosNaming.NamingContextHelper.narrow(orb.resolve_initial_references("NameService"));
 
         // Construction du nom a rechercher
-        org.omg.CosNaming.NameComponent[] nameToFind = new org.omg.CosNaming.NameComponent[1];
-         nameToFind[0] = new org.omg.CosNaming.NameComponent(idObj,"");
+        org.omg.CosNaming.NameComponent[] nameToFindAE = new org.omg.CosNaming.NameComponent[1];
+         nameToFindAE[0] = new org.omg.CosNaming.NameComponent(idObj,"");
+         
+         org.omg.CosNaming.NameComponent[] nameToFindAV = new org.omg.CosNaming.NameComponent[1];
+         nameToFindAV[0] = new org.omg.CosNaming.NameComponent(idObj.replaceAll("AE", "AV"),"");
 
-        // Recherche aupres du naming service
-        org.omg.CORBA.Object distantAE = nameRoot.resolve(nameToFind);
+        // Recherche aupres du naming service AE
+        org.omg.CORBA.Object distantAE = nameRoot.resolve(nameToFindAE);
         System.out.println("Objet '" + idObj + "' trouve aupres du service de noms. IOR de l'objet :");
         System.out.println(orb.object_to_string(distantAE));
+        // Recherche aupres du naming service AV
+        org.omg.CORBA.Object distantAV = nameRoot.resolve(nameToFindAV);
+        System.out.println("Objet '" + idObj.replaceAll("AE", "AV") + "' trouve aupres du service de noms. IOR de l'objet :");
+        System.out.println(orb.object_to_string(distantAV));
 
         // Utilisation directe de l'IOR (SAUF utilisation du service de nommage)
        // org.omg.CORBA.Object distantEuro = orb.string_to_object("IOR:000000000000001b49444c3a436f6e766572746973736575722f4575726f3a312e30000000000001000000000000007c000102000000000d3137322e31362e39362e35340000cb630000001c00564201000000022f0020200000000400000000000002925225d3ea00000003564953030000000500070801ff000000000000000000000800000000564953000000000100000018000000000001000100000001050100010001010900000000");
         // Casting de l'objet CORBA au type convertisseur euro
         monAE = AEHelper.narrow(distantAE);
+        monAV = AVHelper.narrow(distantAV);
         System.out.println("Login Client ?");
         String log = in.readLine();
         System.out.println("Password Client ?");
         String pass = in.readLine();
         short returned = monAE.authentification(log,pass);
         if (returned == 1) System.out.println("#Login successful");
-        monCertif = monAE.genererCertificat("payetaclef"); //plante
+        monCertif = monAE.genererCertificat("payetaclef"); 
         System.out.println("#Certificat généré et récupéré.");
        
     	// Gestion du POA
@@ -107,11 +118,11 @@ public void envoyerMessage (Message msg, Certificat certif){
            nameRoot = org.omg.CosNaming.NamingContextHelper.narrow(orb.resolve_initial_references("NameService"));
 
            // Construction du nom a rechercher
-           nameToFind = new org.omg.CosNaming.NameComponent[1];
-            nameToFind[0] = new org.omg.CosNaming.NameComponent(idObj,"");
+           NameComponent[] nameToFindClient = new org.omg.CosNaming.NameComponent[1];
+            nameToFindClient[0] = new org.omg.CosNaming.NameComponent(idObj,"");
 
            // Recherche aupres du naming service
-           org.omg.CORBA.Object distantClient = nameRoot.resolve(nameToFind);
+           org.omg.CORBA.Object distantClient = nameRoot.resolve(nameToFindClient);
            System.out.println("Objet '" + idObj + "' trouve aupres du service de noms. IOR de l'objet :");
            System.out.println(orb.object_to_string(distantClient));
 

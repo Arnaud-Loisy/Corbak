@@ -74,7 +74,7 @@ public class _AVStub extends org.omg.CORBA.portable.ObjectImpl
     /**
      * Operation verification
      */
-    public void verification(corbak.Certificat certificat)
+    public boolean verification(corbak.Certificat certificat)
         throws corbak.certificatInvalide
     {
         while(true)
@@ -87,7 +87,8 @@ public class _AVStub extends org.omg.CORBA.portable.ObjectImpl
                     org.omg.CORBA.portable.OutputStream _output = this._request("verification",true);
                     corbak.CertificatHelper.write(_output,certificat);
                     _input = this._invoke(_output);
-                    return;
+                    boolean _arg_ret = _input.read_boolean();
+                    return _arg_ret;
                 }
                 catch(org.omg.CORBA.portable.RemarshalException _exception)
                 {
@@ -116,8 +117,7 @@ public class _AVStub extends org.omg.CORBA.portable.ObjectImpl
                 corbak.AVOperations _self = (corbak.AVOperations) _so.servant;
                 try
                 {
-                    _self.verification( certificat);
-                    return;
+                    return _self.verification( certificat);
                 }
                 finally
                 {

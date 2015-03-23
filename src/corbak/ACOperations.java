@@ -21,6 +21,6 @@ public interface ACOperations
     /**
      * Operation verification
      */
-    public void verification(corbak.Signature sign);
+    public boolean verification(corbak.Signature sign);
 
 }

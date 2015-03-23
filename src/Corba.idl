@@ -34,17 +34,17 @@ struct Message {
 
 interface AV { 
 	void revocCertif(in IOR client, in Certificat certif);
-	void verification (in Certificat certificat) raises (certificatInvalide);
+	boolean verification (in Certificat certificat) raises (certificatInvalide);
 };
 
 interface AC {	
 	void revocCertif(in Certificat certif) raises (certificatInvalide);
 	Certificat generationCertificat(in string PubKey, in Date dateExpiration, in IOR ACemmetrice , in Signature sign); 
-	void verification(in Signature sign);
+	boolean verification(in Signature sign);
 };
 
 interface AE{
-	short authentification(in string login, in string password) raises (authentificationEchouee);
+	boolean authentification(in string login, in string password) raises (authentificationEchouee);
 	void revocCertif(in string login, in string password, in Certificat certif) raises (droitsInsufisants ,certificatInvalide);
 	Certificat genererCertificat(in string PubKey);
 };

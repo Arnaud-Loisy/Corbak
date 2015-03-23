@@ -65,9 +65,10 @@ public abstract class AVPOA extends org.omg.PortableServer.Servant
 
         try
         {
-            verification(arg0_in);
+            boolean _arg_result = verification(arg0_in);
 
             _output = handler.createReply();
+            _output.write_boolean(_arg_result);
 
         }
         catch (corbak.certificatInvalide _exception)

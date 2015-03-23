@@ -73,10 +73,10 @@ public class AVPOATie extends AVPOA
     /**
      * Operation verification
      */
-    public void verification(corbak.Certificat certificat)
+    public boolean verification(corbak.Certificat certificat)
         throws corbak.certificatInvalide
     {
-        _tie.verification( certificat);
+        return _tie.verification( certificat);
     }
 
 }

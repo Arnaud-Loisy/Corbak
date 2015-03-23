@@ -16,9 +16,9 @@ public class AVImpl extends AVPOA{
 	}
 
 	@Override
-	public void verification(Certificat certificat) throws certificatInvalide {
+	public boolean verification(Certificat certificat) throws certificatInvalide {
 		// TODO Auto-generated method stub
-		
+		return true;
 	}
 
 }

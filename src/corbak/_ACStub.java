@@ -132,7 +132,7 @@ public class _ACStub extends org.omg.CORBA.portable.ObjectImpl
     /**
      * Operation verification
      */
-    public void verification(corbak.Signature sign)
+    public boolean verification(corbak.Signature sign)
     {
         while(true)
         {
@@ -144,7 +144,8 @@ public class _ACStub extends org.omg.CORBA.portable.ObjectImpl
                     org.omg.CORBA.portable.OutputStream _output = this._request("verification",true);
                     corbak.SignatureHelper.write(_output,sign);
                     _input = this._invoke(_output);
-                    return;
+                    boolean _arg_ret = _input.read_boolean();
+                    return _arg_ret;
                 }
                 catch(org.omg.CORBA.portable.RemarshalException _exception)
                 {
@@ -168,8 +169,7 @@ public class _ACStub extends org.omg.CORBA.portable.ObjectImpl
                 corbak.ACOperations _self = (corbak.ACOperations) _so.servant;
                 try
                 {
-                    _self.verification( sign);
-                    return;
+                    return _self.verification( sign);
                 }
                 finally
                 {
