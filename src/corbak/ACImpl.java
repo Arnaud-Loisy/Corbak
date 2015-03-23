@@ -116,12 +116,7 @@ public class ACImpl extends ACPOA{
 	@Override
 	public Certificat generationCertificat(String PubKey, Date dateExpiration, Object ACemmetrice, Signature sign) {
 
-		Certificat cert = new Certificat();
-
-		cert.pubClef=PubKey;
-		cert.dateExpiration=dateExpiration;
-		cert.ACemmetrice=ACemmetrice;
-		cert.sign=sign;
+		Certificat cert = new Certificat(dateExpiration, ACemmetrice, PubKey, sign);
 
 		listCert.add(cert);
 		return cert;
@@ -136,6 +131,6 @@ public class ACImpl extends ACPOA{
 				return true;
 			}
 		}
-		System.out.println("Invalide");
+		return false;
 	}
 }
