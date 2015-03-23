@@ -124,13 +124,11 @@ public class ACImpl extends ACPOA{
 	}
 
 	@Override
-	public void verification(Signature sign) {
+	public boolean verification(Signature sign) {
 		for(int i=0;i<listCert.size();i++){;
-			if (sign.hash.equals(listCert.get(i).sign.hash)) {
-				System.out.println("Valide");
-				return;
-			}
+			if (sign.hash.equals(listCert.get(i).sign.hash))
+				return true;
 		}
-		System.out.println("Invalide");
+		return false;
 	}
 }
