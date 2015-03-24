@@ -1,6 +1,7 @@
 package corbak;
 
 import java.util.Calendar;
+import java.util.Hashtable;
 
 import logs.logs;
 
@@ -11,7 +12,11 @@ import org.omg.PortableServer.POAHelper;
 public class AEImpl extends AEPOA {
 
 	public static AC monAC;
+<<<<<<< HEAD
 	public static String nomAC;
+=======
+	private static Hashtable<String, String> listClient;
+>>>>>>> branch 'master' of https://github.com/Arnaud-Loisy/Corbak.git
 
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
@@ -20,6 +25,14 @@ public class AEImpl extends AEPOA {
 						+ args[0]
 						+ "\t##################################################");
 		String nomAE = args[0];
+		
+		// Init authentification
+		
+		listClient = new Hashtable<String, String>();
+		listClient.put("mathieu", "raoux");
+		listClient.put("arnaud", "loisy");
+		listClient.put("julie", "thene");
+		
 		try {
 			// Intialisation de l'ORB
 			// ************************
@@ -96,17 +109,27 @@ public class AEImpl extends AEPOA {
 	}
 
 	public boolean authentification(String login, String password) {
-
 		logs.log("info", login + " demande à s'authentifier : OK");
-		return true;
-
+		// Check si le login existe dans la liste
+		if(listClient.containsKey(login))
+		{
+			// Check si le password correspond
+			if(listClient.get(login).equals(password)){
+				return true;
+			}
+			else 
+				return false;
+		}
+		else
+			return false;
 	}
+
+
 
 	@Override
 	public boolean revocCertif(String login, String password, Certificat certif)
 			throws droitsInsufisants, certificatInvalide {
-		// TODO Auto-generated method stub
-
+		return monAC.revocCertif(certif);
 	}
 
 	@Override

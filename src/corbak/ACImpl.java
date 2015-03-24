@@ -96,6 +96,7 @@ public class ACImpl extends ACPOA {
 				listCert.remove(i);
 			break;
 		}
+		monAV.revocCertif(Certificat certif);
 
 	}
 

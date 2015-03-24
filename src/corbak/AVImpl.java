@@ -89,9 +89,10 @@ public class AVImpl extends AVPOA {
 
 	}
 
-	@Override
-	public boolean revocCertif(Object client, Certificat certif) {
-		// TODO Auto-generated method stub
+
+	public boolean revocCertif(Certificat certif) {
+		
+		return true;
 
 	}
 
