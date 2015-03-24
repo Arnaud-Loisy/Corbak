@@ -5,6 +5,6 @@ package corbak;
  * 
  * @author OpenORB Compiler
  */
-public interface AE extends AEOperations, org.omg.CORBA.Object,
-		org.omg.CORBA.portable.IDLEntity {
+public interface AE extends AEOperations, org.omg.CORBA.Object, org.omg.CORBA.portable.IDLEntity
+{
 }

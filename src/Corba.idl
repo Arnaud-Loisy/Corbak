@@ -33,19 +33,19 @@ struct Message {
 };
 
 interface AV { 
-	void revocCertif(in IOR client, in Certificat certif);
+	boolean revocCertif( in Certificat certif);
 	boolean verification (in Certificat certificat) raises (certificatInvalide);
 };
 
 interface AC {	
-	void revocCertif(in Certificat certif) raises (certificatInvalide);
-	Certificat generationCertificat(in string PubKey, in Date dateExpiration, in IOR ACemmetrice , in Signature sign); 
+	boolean revocCertif(in Certificat certif) raises (certificatInvalide);
+	Certificat generationCertificat(in string PubKey, in Date dateExpiration, in string ACemmetrice , in Signature sign); 
 	boolean verification(in Signature sign);
 };
 
 interface AE{
 	boolean authentification(in string login, in string password) raises (authentificationEchouee);
-	void revocCertif(in string login, in string password, in Certificat certif) raises (droitsInsufisants ,certificatInvalide);
+	boolean revocCertif(in string login, in string password, in Certificat certif) raises (droitsInsufisants ,certificatInvalide);
 	Certificat genererCertificat(in string PubKey);
 };
 

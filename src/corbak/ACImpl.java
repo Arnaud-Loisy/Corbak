@@ -90,7 +90,7 @@ public class ACImpl extends ACPOA {
 
 	}
 
-	public void revocCertif(Certificat cert) {
+	public boolean revocCertif(Certificat cert) {
 		for (int i = 0; i < listCert.size(); i++) {
 			if (listCert.get(i).pubClef == cert.pubClef)
 				listCert.remove(i);
