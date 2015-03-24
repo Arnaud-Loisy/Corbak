@@ -5,55 +5,54 @@ package corbak;
  * 
  * @author OpenORB Compiler
  */
-final public class ACHolder implements org.omg.CORBA.portable.Streamable {
-	/**
-	 * Internal AC value
-	 */
-	public corbak.AC value;
+final public class ACHolder
+        implements org.omg.CORBA.portable.Streamable
+{
+    /**
+     * Internal AC value
+     */
+    public corbak.AC value;
 
-	/**
-	 * Default constructor
-	 */
-	public ACHolder() {
-	}
+    /**
+     * Default constructor
+     */
+    public ACHolder()
+    { }
 
-	/**
-	 * Constructor with value initialisation
-	 * 
-	 * @param initial
-	 *            the initial value
-	 */
-	public ACHolder(corbak.AC initial) {
-		value = initial;
-	}
+    /**
+     * Constructor with value initialisation
+     * @param initial the initial value
+     */
+    public ACHolder(corbak.AC initial)
+    {
+        value = initial;
+    }
 
-	/**
-	 * Read AC from a marshalled stream
-	 * 
-	 * @param istream
-	 *            the input stream
-	 */
-	public void _read(org.omg.CORBA.portable.InputStream istream) {
-		value = ACHelper.read(istream);
-	}
+    /**
+     * Read AC from a marshalled stream
+     * @param istream the input stream
+     */
+    public void _read(org.omg.CORBA.portable.InputStream istream)
+    {
+        value = ACHelper.read(istream);
+    }
 
-	/**
-	 * Write AC into a marshalled stream
-	 * 
-	 * @param ostream
-	 *            the output stream
-	 */
-	public void _write(org.omg.CORBA.portable.OutputStream ostream) {
-		ACHelper.write(ostream, value);
-	}
+    /**
+     * Write AC into a marshalled stream
+     * @param ostream the output stream
+     */
+    public void _write(org.omg.CORBA.portable.OutputStream ostream)
+    {
+        ACHelper.write(ostream,value);
+    }
 
-	/**
-	 * Return the AC TypeCode
-	 * 
-	 * @return a TypeCode
-	 */
-	public org.omg.CORBA.TypeCode _type() {
-		return ACHelper.type();
-	}
+    /**
+     * Return the AC TypeCode
+     * @return a TypeCode
+     */
+    public org.omg.CORBA.TypeCode _type()
+    {
+        return ACHelper.type();
+    }
 
 }

@@ -90,7 +90,7 @@ public class AVImpl extends AVPOA {
 	}
 
 	@Override
-	public void revocCertif(Object client, Certificat certif) {
+	public boolean revocCertif(Object client, Certificat certif) {
 		// TODO Auto-generated method stub
 
 	}
@@ -104,6 +104,7 @@ public class AVImpl extends AVPOA {
 				logs.log("dev", "Ce certificat est révoqué");
 			return false;
 		}
+		monAC = (AC)certificat.ACemmetrice;
 		return monAC.verification(certificat.sign);
 	}
 

@@ -11,6 +11,7 @@ import org.omg.PortableServer.POAHelper;
 public class AEImpl extends AEPOA {
 
 	public static AC monAC;
+	public static String nomAC;
 
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
@@ -64,7 +65,7 @@ public class AEImpl extends AEPOA {
 			logs.log("dev", "L'objet possede la reference suivante :");
 			logs.log("dev", IORServant);
 
-			String nomAC = nomAE.replaceAll("AE", "AC");
+			nomAC = nomAE.replaceAll("AE", "AC");
 
 			logs.log("info", "demande de ratachement à l'" + nomAC + "...");
 
@@ -102,7 +103,7 @@ public class AEImpl extends AEPOA {
 	}
 
 	@Override
-	public void revocCertif(String login, String password, Certificat certif)
+	public boolean revocCertif(String login, String password, Certificat certif)
 			throws droitsInsufisants, certificatInvalide {
 		// TODO Auto-generated method stub
 
@@ -128,7 +129,7 @@ public class AEImpl extends AEPOA {
 					(short) c.get(Calendar.MINUTE),
 					(short) c.get(Calendar.SECOND));
 			logs.log("debug", "Date expir :" + c.get(Calendar.YEAR + 1));
-			cert = monAC.generationCertificat(PubKey, expir, monAC, sig);
+			cert = monAC.generationCertificat(PubKey, expir, nomAC, sig);
 			logs.log("debug", "monAC.generationCertificat");
 
 		} catch (Exception e) {
