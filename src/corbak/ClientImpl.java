@@ -155,7 +155,9 @@ public class ClientImpl extends ClientPOA {
 			});
 			t.start();
 			
-			logs.pagesJaunes(nameRoot, "");
+			logs.clear();
+			logs.log("info","Liste des clients disponibles");
+			logs.pagesJaunes(nameRoot, "clients");
 			
 			// Saisie du nom de l'objet (si utilisation du service de nommage)
 			logs.log("info","Qui voulez-vous contacter ?");

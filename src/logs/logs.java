@@ -25,15 +25,17 @@ public class logs {
 							.resolve(name));
 					pagesJaunes(context, name[0].id + ".");
 				} else {
-					if (type == "client") {
+					if (type == "clients") {
 						if (!name[0].id.matches("A\\p{Upper}\\p{Digit}")) {
-							System.out.println("\t"+name[0].id);
+							System.out.print("\t" + name[0].id);
 						}
-					}else if (type=="AE")if (name[0].id.matches("AE\\p{Digit}")) {
-						System.out.println("\t"+name[0].id);
-					}
+					} else if (type == "AE")
+						if (name[0].id.matches("AE\\p{Digit}")) {
+							System.out.print("\t" + name[0].id);
+						}
 				}
 			}
+			System.out.println();
 
 		} catch (Exception e) {
 			System.out.println("ERROR : " + e);
@@ -68,7 +70,6 @@ public class logs {
 	}
 
 	public static void clear() {
-		System.out
-				.println("\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n");
+		System.out.println("\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n");
 	}
 }
