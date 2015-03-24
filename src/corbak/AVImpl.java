@@ -91,8 +91,7 @@ public class AVImpl extends AVPOA {
 
 	@Override
 	public boolean revocCertif(Certificat certif) {
-		
-		return true;
+		return revokCertif.add(certif);
 	}
 
 	@Override
