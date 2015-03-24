@@ -5,6 +5,6 @@ package corbak;
  * 
  * @author OpenORB Compiler
  */
-public interface Client extends ClientOperations, org.omg.CORBA.Object, org.omg.CORBA.portable.IDLEntity
-{
+public interface Client extends ClientOperations, org.omg.CORBA.Object,
+		org.omg.CORBA.portable.IDLEntity {
 }

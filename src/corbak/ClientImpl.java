@@ -24,10 +24,10 @@ public class ClientImpl extends ClientPOA {
 		Calendar c = Calendar.getInstance();
 
 		if (certif.dateExpiration.year < c.get(Calendar.YEAR)) {
-			logs.log("debug","Certificat non expiré.");
+			logs.log("debug", "Certificat non expiré.");
 			try {
 				if (monAV.verification(certif)) {
-					System.out.println(from+" : "+msg.text);
+					System.out.println(from + " : " + msg.text);
 				}
 			} catch (certificatInvalide e) {
 				// TODO Auto-generated catch block
@@ -35,17 +35,18 @@ public class ClientImpl extends ClientPOA {
 			}
 			;
 		} else
-			logs.log("info","Certificat expiré.");
+			logs.log("info", "Certificat expiré.");
 
 	}
+
 	@Override
 	public void envoyer(Certificat certif) {
 		Calendar c = Calendar.getInstance();
 
 		if (certif.dateExpiration.year < c.get(Calendar.YEAR)) {
-			logs.log("dev","Certificat non expiré.");
+			logs.log("dev", "Certificat non expiré.");
 		} else
-			logs.log("info","Certificat expiré.");
+			logs.log("info", "Certificat expiré.");
 
 	}
 
@@ -56,30 +57,31 @@ public class ClientImpl extends ClientPOA {
 			int i = (int) Math.floor(Math.random() * 88);
 			pubKey += chars.charAt(i);
 		}
-		logs.log("dev","Clé publique générée : \n" + pubKey);
+		logs.log("dev", "Clé publique générée : \n" + pubKey);
 		return pubKey;
 	}
 
 	public static void main(String args[]) {
 
 		try {
-			System.out.println("##################################################\tclient\t##################################################");
+			System.out
+					.println("##################################################\tclient\t##################################################");
 			PubKey = genPubKey(128);
 
 			// Intialisation de l'orb
 			org.omg.CORBA.ORB orb = org.omg.CORBA.ORB.init(args, null);
 			// Recuperation du naming service
-			NamingContext nameRoot = org.omg.CosNaming.NamingContextHelper.narrow(orb.resolve_initial_references("NameService"));
+			NamingContext nameRoot = org.omg.CosNaming.NamingContextHelper
+					.narrow(orb.resolve_initial_references("NameService"));
 
 			// Saisie du nom de l'objet (si utilisation du service de nommage)
-			logs.log("info","Liste des AE disponibles");
+			logs.log("info", "Liste des AE disponibles");
 			logs.pagesJaunes(nameRoot, "AE");
-			logs.log("info","Quelle AE voulez-vous contacter ?");
-			
-			BufferedReader in = new BufferedReader(new InputStreamReader(System.in));
-			String idObj = in.readLine();
+			logs.log("info", "Quelle AE voulez-vous contacter ?");
 
-			
+			BufferedReader in = new BufferedReader(new InputStreamReader(
+					System.in));
+			String idObj = in.readLine();
 
 			// Construction du nom a rechercher
 			org.omg.CosNaming.NameComponent[] nameToFindAE = new org.omg.CosNaming.NameComponent[1];
@@ -91,12 +93,13 @@ public class ClientImpl extends ClientPOA {
 
 			// Recherche aupres du naming service AE
 			org.omg.CORBA.Object distantAE = nameRoot.resolve(nameToFindAE);
-			logs.log("info",idObj+ " trouve aupres du service de noms.");
-			logs.log("debug",orb.object_to_string(distantAE));
+			logs.log("info", idObj + " trouve aupres du service de noms.");
+			logs.log("debug", orb.object_to_string(distantAE));
 			// Recherche aupres du naming service AV
 			org.omg.CORBA.Object distantAV = nameRoot.resolve(nameToFindAV);
-			logs.log("info",idObj.replaceAll("AE", "AV")+ " trouve aupres du service de noms.");
-			logs.log("debug",orb.object_to_string(distantAV));
+			logs.log("info", idObj.replaceAll("AE", "AV")
+					+ " trouve aupres du service de noms.");
+			logs.log("debug", orb.object_to_string(distantAV));
 
 			// Utilisation directe de l'IOR (SAUF utilisation du service de
 			// nommage)
@@ -105,15 +108,15 @@ public class ClientImpl extends ClientPOA {
 			// Casting de l'objet CORBA au type convertisseur euro
 			monAE = AEHelper.narrow(distantAE);
 			monAV = AVHelper.narrow(distantAV);
-			logs.log("info","Login Client ?");
+			logs.log("info", "Login Client ?");
 			String log = in.readLine();
 			from = log;
-			logs.log("info","Password Client ?");
+			logs.log("info", "Password Client ?");
 			String pass = in.readLine();
 			if (monAE.authentification(log, pass))
-				logs.log("info","Login successful");
+				logs.log("info", "Login successful");
 			monCertif = monAE.genererCertificat(PubKey);
-			logs.log("dev","Certificat généré et récupéré.");
+			logs.log("dev", "Certificat généré et récupéré.");
 
 			// Gestion du POA
 			// ****************
@@ -135,32 +138,31 @@ public class ClientImpl extends ClientPOA {
 
 			// Construction du nom a enregistrer
 			org.omg.CosNaming.NameComponent[] nameToRegister = new org.omg.CosNaming.NameComponent[1];
-			
-			
+
 			nameToRegister[0] = new org.omg.CosNaming.NameComponent(log, "");
 
 			// Enregistrement de l'objet CORBA dans le service de noms
 			nameRoot.rebind(nameToRegister,
 					rootPOA.servant_to_reference(monClient));
-			logs.log("dev",log+ " est enregistre dans l'annuaire.");
+			logs.log("dev", log + " est enregistre dans l'annuaire.");
 
 			String IORServant = orb.object_to_string(rootPOA
 					.servant_to_reference(monClient));
-			logs.log("debug","L'objet possede la reference suivante :");
-			logs.log("debug",IORServant);
+			logs.log("debug", "L'objet possede la reference suivante :");
+			logs.log("debug", IORServant);
 			Thread t = new Thread(new Runnable() {
 				public void run() {
 					orb.run();
 				}
 			});
 			t.start();
-			
+
 			logs.clear();
-			logs.log("info","Liste des clients disponibles");
+			logs.log("info", "Liste des clients disponibles");
 			logs.pagesJaunes(nameRoot, "clients");
-			
+
 			// Saisie du nom de l'objet (si utilisation du service de nommage)
-			logs.log("info","Qui voulez-vous contacter ?");
+			logs.log("info", "Qui voulez-vous contacter ?");
 
 			idObj = in.readLine();
 
@@ -175,8 +177,8 @@ public class ClientImpl extends ClientPOA {
 			// Recherche aupres du naming service
 			org.omg.CORBA.Object distantClient = nameRoot
 					.resolve(nameToFindClient);
-			logs.log("info",idObj+ " trouve aupres du service de noms.");
-			logs.log("debug",orb.object_to_string(distantClient));
+			logs.log("info", idObj + " trouve aupres du service de noms.");
+			logs.log("debug", orb.object_to_string(distantClient));
 
 			// Utilisation directe de l'IOR (SAUF utilisation du service de
 			// nommage)
@@ -185,9 +187,9 @@ public class ClientImpl extends ClientPOA {
 			// Casting de l'objet CORBA au type convertisseur euro
 			monCorrespondant = ClientHelper.narrow(distantClient);
 			while (true) {
-				System.out.print(log+" : ");
+				System.out.print(log + " : ");
 				String message = in.readLine();
-				
+
 				Signature sign = new Signature("hash");
 				Message msg = new Message(sign, message, false);
 				monCorrespondant.envoyer(monCertif);
@@ -200,7 +202,5 @@ public class ClientImpl extends ClientPOA {
 		}
 
 	}
-
-	
 
 }
