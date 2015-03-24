@@ -123,10 +123,9 @@ public class AEImpl extends AEPOA {
 
 
 	@Override
-	public void revocCertif(String login, String password, Certificat certif)
+	public boolean revocCertif(String login, String password, Certificat certif)
 			throws droitsInsufisants, certificatInvalide {
-		// TODO Auto-generated method stub
-
+		return monAC.revocCertif(certif);
 	}
 
 	@Override
