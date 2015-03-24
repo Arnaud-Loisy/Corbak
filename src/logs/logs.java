@@ -8,7 +8,7 @@ import org.omg.CosNaming.NamingContext;
 import org.omg.CosNaming.NamingContextHelper;
 
 public class logs {
-	public static String verbLvl = "prod"; // prod - dev - debug
+	public static String verbLvl = "debug"; // prod - dev - debug
 
 	public static void pagesJaunes(NamingContext nc, String type) {
 		try {

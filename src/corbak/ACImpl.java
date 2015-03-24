@@ -4,15 +4,34 @@ import java.util.ArrayList;
 
 import logs.logs;
 
-import org.omg.CORBA.Object;
 import org.omg.CosNaming.NamingContext;
+import org.omg.CosNaming.NamingContextPackage.CannotProceed;
+import org.omg.CosNaming.NamingContextPackage.InvalidName;
+import org.omg.CosNaming.NamingContextPackage.NotFound;
 import org.omg.PortableServer.POA;
 import org.omg.PortableServer.POAHelper;
 
+
 public class ACImpl extends ACPOA {
 
+	public static AV monAV;
+	public static String PubKey;
+	public static Certificat monCertif;
+	public static NamingContext nameRoot;
+	public static String nomAC;
 	public static ArrayList<Certificat> listCert;
 	public static org.omg.CORBA.ORB orb;
+	
+	public static String genPubKey(int length) {
+		String chars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890~#{[|`^@]}^$ù*¨£µ%!:;,?./§";
+		String pubKey = "";
+		for (int x = 0; x < length; x++) {
+			int i = (int) Math.floor(Math.random() * 88);
+			pubKey += chars.charAt(i);
+		}
+		logs.log("dev", "Clé publique générée : \n" + pubKey);
+		return pubKey;
+	}
 
 	public static void main(String[] args) {
 
@@ -21,7 +40,8 @@ public class ACImpl extends ACPOA {
 						+ args[0]
 						+ "\t##################################################");
 		try {
-			String nomAC = args[0];
+			PubKey = genPubKey(128);
+			nomAC = args[0];
 
 			// initialisation de la liste.
 
@@ -49,7 +69,7 @@ public class ACImpl extends ACPOA {
 			// Enregistrement dans le service de nommage
 			// *******************************************
 			// Recuperation du naming service
-			NamingContext nameRoot = org.omg.CosNaming.NamingContextHelper
+			nameRoot = org.omg.CosNaming.NamingContextHelper
 					.narrow(orb.resolve_initial_references("NameService"));
 
 			// Construction du nom a enregistrer
@@ -62,13 +82,25 @@ public class ACImpl extends ACPOA {
 
 			// Enregistrement de l'objet CORBA dans le service de noms
 			nameRoot.rebind(nameToRegister, rootPOA.servant_to_reference(monAC));
-			logs.log("info", nomAC
-					+ "' est enregistre dans le service de noms.");
+			logs.log("info", nomAC+ "' est enregistre dans le service de noms.");
 
-			String IORServant = orb.object_to_string(rootPOA
-					.servant_to_reference(monAC));
+			String IORServant = orb.object_to_string(rootPOA.servant_to_reference(monAC));
 			logs.log("debug", "L'objet possede la reference suivante :");
 			logs.log("debug", IORServant);
+			
+			
+			/*
+			//AV
+			org.omg.CosNaming.NameComponent[] nameToFindAV = new org.omg.CosNaming.NameComponent[1];
+			nameToFindAV[0] = new org.omg.CosNaming.NameComponent(
+					nomAC.replaceAll("AC", "AV"), "");
+
+			// Recherche aupres du naming service AV
+			org.omg.CORBA.Object distantAV = nameRoot.resolve(nameToFindAV);
+			logs.log("info", "Objet '" + nomAC.replaceAll("AC", "AV")
+					+ "' trouve aupres du service de noms. IOR de l'objet :");
+			logs.log("debug", orb.object_to_string(distantAV));
+			monAV = AVHelper.narrow(distantAV);*/
 
 			// Lancement de l'ORB et mise en attente de requete
 			// **************************************************
@@ -94,18 +126,35 @@ public class ACImpl extends ACPOA {
 		for (int i = 0; i < listCert.size(); i++) {
 			if (listCert.get(i).pubClef == cert.pubClef)
 				listCert.remove(i);
+			logs.log("info", "Certif révoqué");
 			break;
 		}
-		monAV.revocCertif(cert);
+		
+		try {
+			//AV
+			org.omg.CosNaming.NameComponent[] nameToFindAV = new org.omg.CosNaming.NameComponent[1];
+			nameToFindAV[0] = new org.omg.CosNaming.NameComponent(
+					nomAC.replaceAll("AC", "AV"), "");
+
+			// Recherche aupres du naming service AV
+			org.omg.CORBA.Object distantAV = nameRoot.resolve(nameToFindAV);
+			logs.log("info", "Objet '" + nomAC.replaceAll("AC", "AV")
+					+ "' trouve aupres du service de noms.");
+			logs.log("debug", orb.object_to_string(distantAV));
+			monAV = AVHelper.narrow(distantAV);
+			return monAV.revocCertif(cert);
+		} catch (NotFound | CannotProceed | InvalidName e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return false;
 
 	}
 
 	@Override
-	public Certificat generationCertificat(String PubKey, Date dateExpiration,
-			Object ACemmetrice, Signature sign) {
+	public Certificat generationCertificat(String PubKey, Date dateExpiration,String ACemmetrice, Signature sign) {
 
-		Certificat cert = new Certificat(dateExpiration, ACemmetrice, PubKey,
-				sign);
+		Certificat cert = new Certificat(dateExpiration, ACemmetrice, PubKey,sign);
 
 		listCert.add(cert);
 		return cert;

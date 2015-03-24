@@ -12,11 +12,10 @@ import org.omg.PortableServer.POAHelper;
 public class AEImpl extends AEPOA {
 
 	public static AC monAC;
-<<<<<<< HEAD
+
 	public static String nomAC;
-=======
+
 	private static Hashtable<String, String> listClient;
->>>>>>> branch 'master' of https://github.com/Arnaud-Loisy/Corbak.git
 
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub

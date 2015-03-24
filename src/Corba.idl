@@ -21,7 +21,7 @@ struct Signature {
 };
 struct Certificat {
 	Date dateExpiration;
-	IOR ACemmetrice;
+	string ACemmetrice;
 	string pubClef;
 	Signature sign;
 };

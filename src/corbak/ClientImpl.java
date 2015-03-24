@@ -73,6 +73,7 @@ public class ClientImpl extends ClientPOA {
 			// Recuperation du naming service
 			NamingContext nameRoot = org.omg.CosNaming.NamingContextHelper
 					.narrow(orb.resolve_initial_references("NameService"));
+			//orb.
 
 			// Saisie du nom de l'objet (si utilisation du service de nommage)
 			logs.log("info", "Liste des AE disponibles");

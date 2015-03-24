@@ -15,7 +15,7 @@ public final class Certificat implements org.omg.CORBA.portable.IDLEntity
     /**
      * Struct member ACemmetrice
      */
-    public org.omg.CORBA.Object ACemmetrice;
+    public String ACemmetrice;
 
     /**
      * Struct member pubClef
@@ -40,7 +40,7 @@ public final class Certificat implements org.omg.CORBA.portable.IDLEntity
      * @param pubClef pubClef struct member
      * @param sign sign struct member
      */
-    public Certificat(corbak.Date dateExpiration, org.omg.CORBA.Object ACemmetrice, String pubClef, corbak.Signature sign)
+    public Certificat(corbak.Date dateExpiration, String ACemmetrice, String pubClef, corbak.Signature sign)
     {
         this.dateExpiration = dateExpiration;
         this.ACemmetrice = ACemmetrice;

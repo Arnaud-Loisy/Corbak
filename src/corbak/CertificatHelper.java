@@ -80,7 +80,7 @@ public class CertificatHelper
                 _members[0].type = corbak.DateHelper.type();
                 _members[1] = new org.omg.CORBA.StructMember();
                 _members[1].name = "ACemmetrice";
-                _members[1].type = corbak.IORHelper.type();
+                _members[1].type = orb.get_primitive_tc(org.omg.CORBA.TCKind.tk_string);
                 _members[2] = new org.omg.CORBA.StructMember();
                 _members[2].name = "pubClef";
                 _members[2].type = orb.get_primitive_tc(org.omg.CORBA.TCKind.tk_string);
@@ -115,7 +115,7 @@ public class CertificatHelper
         corbak.Certificat new_one = new corbak.Certificat();
 
         new_one.dateExpiration = corbak.DateHelper.read(istream);
-        new_one.ACemmetrice = corbak.IORHelper.read(istream);
+        new_one.ACemmetrice = istream.read_string();
         new_one.pubClef = istream.read_string();
         new_one.sign = corbak.SignatureHelper.read(istream);
 
@@ -130,7 +130,7 @@ public class CertificatHelper
     public static void write(org.omg.CORBA.portable.OutputStream ostream, corbak.Certificat value)
     {
         corbak.DateHelper.write(ostream,value.dateExpiration);
-        corbak.IORHelper.write(ostream,value.ACemmetrice);
+        ostream.write_string(value.ACemmetrice);
         ostream.write_string(value.pubClef);
         corbak.SignatureHelper.write(ostream,value.sign);
     }

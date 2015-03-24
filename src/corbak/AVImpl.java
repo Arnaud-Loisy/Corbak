@@ -6,12 +6,17 @@ import logs.logs;
 
 import org.omg.CORBA.Object;
 import org.omg.CosNaming.NamingContext;
+import org.omg.CosNaming.NamingContextPackage.CannotProceed;
+import org.omg.CosNaming.NamingContextPackage.InvalidName;
+import org.omg.CosNaming.NamingContextPackage.NotFound;
 import org.omg.PortableServer.POA;
 import org.omg.PortableServer.POAHelper;
 
 public class AVImpl extends AVPOA {
 	public static AC monAC;
 	private static ArrayList<Certificat> revokCertif;
+	private static NamingContext nameRoot;
+	private static org.omg.CORBA.ORB orb;
 
 	public static void main(String[] args) {
 		try {
@@ -24,7 +29,7 @@ public class AVImpl extends AVPOA {
 			revokCertif = new ArrayList<Certificat>();
 			// Intialisation de l'ORB
 			// ************************
-			final org.omg.CORBA.ORB orb = org.omg.CORBA.ORB.init(args, null);
+			orb = org.omg.CORBA.ORB.init(args, null);
 
 			// Gestion du POA
 			// ****************
@@ -45,7 +50,7 @@ public class AVImpl extends AVPOA {
 			// Enregistrement dans le service de nommage
 			// *******************************************
 			// Recuperation du naming service
-			NamingContext nameRoot = org.omg.CosNaming.NamingContextHelper
+			nameRoot = org.omg.CosNaming.NamingContextHelper
 					.narrow(orb.resolve_initial_references("NameService"));
 
 			// Construction du nom a enregistrer
@@ -91,6 +96,7 @@ public class AVImpl extends AVPOA {
 
 
 	public boolean revocCertif(Certificat certif) {
+		logs.log("info", "Certif révoqué");
 		return revokCertif.add(certif);
 	}
 
@@ -103,7 +109,25 @@ public class AVImpl extends AVPOA {
 				logs.log("dev", "Ce certificat est révoqué");
 			return false;
 		}
-		monAC = (AC)certificat.ACemmetrice;
+		org.omg.CosNaming.NameComponent[] nameToFindAC = new org.omg.CosNaming.NameComponent[1];
+		nameToFindAC[0] = new org.omg.CosNaming.NameComponent(certificat.ACemmetrice, "");
+		org.omg.CORBA.Object distantAC;
+		try {
+			distantAC = nameRoot.resolve(nameToFindAC);
+			logs.log("info", "Objet '" + certificat.ACemmetrice	+ "' trouve aupres du service de noms.");
+			logs.log("debug", orb.object_to_string(distantAC));
+			monAC = ACHelper.narrow(distantAC);
+		} catch (NotFound e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (CannotProceed e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (InvalidName e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
 		return monAC.verification(certificat.sign);
 	}
 
