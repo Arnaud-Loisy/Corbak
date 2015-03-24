@@ -1,18 +1,15 @@
 package corbak;
 
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
+
 import java.util.ArrayList;
 
-import org.omg.CORBA.ORB;
+
+
+
+import logs.logs;
+
 import org.omg.CORBA.Object;
-import org.omg.CORBA.ORBPackage.InvalidName;
 import org.omg.CosNaming.NamingContext;
-import org.omg.CosNaming.NamingContextExt;
-import org.omg.CosNaming.NamingContextExtHelper;
-import org.omg.CosNaming.NamingContextHelper;
-import org.omg.CosNaming.NamingContextPackage.CannotProceed;
-import org.omg.CosNaming.NamingContextPackage.NotFound;
 import org.omg.PortableServer.POA;
 import org.omg.PortableServer.POAHelper;
 
@@ -23,8 +20,9 @@ public class ACImpl extends ACPOA{
 
 	public static void main(String[] args) {
 		
-			System.out.println("##AC##");
+		System.out.println("##################################################\t"+args[0]+"\t##################################################");
 			try {
+				String nomAC = args[0];
 				
 				//initialisation de la liste.
 				
@@ -56,18 +54,18 @@ public class ACImpl extends ACPOA{
 
 				// Construction du nom a enregistrer
 				org.omg.CosNaming.NameComponent[] nameToRegister = new org.omg.CosNaming.NameComponent[1];
-				System.out.println("Sous quel nom voulez-vous enregistrer l'objet Corba ?");
-				BufferedReader in = new BufferedReader(new InputStreamReader(System.in));
-				String nomObj = in.readLine();
-				nameToRegister[0] = new org.omg.CosNaming.NameComponent(nomObj,"");
+				//System.out.println("Sous quel nom voulez-vous enregistrer l'objet Corba ?");
+				//BufferedReader in = new BufferedReader(new InputStreamReader(System.in));
+				//String nomObj = in.readLine();
+				nameToRegister[0] = new org.omg.CosNaming.NameComponent(nomAC,"");
 
 				// Enregistrement de l'objet CORBA dans le service de noms
 				nameRoot.rebind(nameToRegister,rootPOA.servant_to_reference(monAC));
-				System.out.println("==> Nom '"+ nomObj + "' est enregistre dans le service de noms.");
+				logs.log("info",nomAC + "' est enregistre dans le service de noms.");
 
 				String IORServant = orb.object_to_string(rootPOA.servant_to_reference(monAC));
-				System.out.println("L'objet possede la reference suivante :");
-				System.out.println(IORServant);
+				logs.log("debug","L'objet possede la reference suivante :");
+				logs.log("debug",IORServant);
 
 				// Lancement de l'ORB et mise en attente de requete
 				//**************************************************
@@ -81,8 +79,7 @@ public class ACImpl extends ACPOA{
 				});
 				t.start();
 
-				//DEBUG
-				//nomObj = in.readLine();
+				
 
 
 			}
@@ -127,7 +124,7 @@ public class ACImpl extends ACPOA{
 	public boolean verification(Signature sign) {
 		for(int i=0;i<listCert.size();i++){;
 			if (sign.hash.equals(listCert.get(i).sign.hash)) {
-				System.out.println("Valide");
+				logs.log("dev","Valide");
 				return true;
 			}
 		}

@@ -1,8 +1,8 @@
 package corbak;
 
-import java.security.*;
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
+import java.util.Calendar;
+
+import logs.logs;
 
 import org.omg.CosNaming.NamingContext;
 import org.omg.PortableServer.POA;
@@ -14,7 +14,8 @@ public class AEImpl extends AEPOA{
 	
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
-System.out.println("##AE##");
+		System.out.println("##################################################\t"+args[0]+"\t##################################################");
+		String nomAE =args[0];
 try {
     // Intialisation de l'ORB
     //************************
@@ -44,45 +45,35 @@ try {
 
     // Construction du nom a enregistrer
     org.omg.CosNaming.NameComponent[] nameToRegister = new org.omg.CosNaming.NameComponent[1];
-    System.out.println("Sous quel nom voulez-vous enregistrer l'objet Corba ?");
-    BufferedReader in = new BufferedReader(new InputStreamReader(System.in));
-    String nomAE = in.readLine();
+    //System.out.println("Sous quel nom voulez-vous enregistrer l'objet Corba ?");
+    //BufferedReader in = new BufferedReader(new InputStreamReader(System.in));
+    //String nomAE = in.readLine();
     nameToRegister[0] = new org.omg.CosNaming.NameComponent(nomAE,"");
 
     // Enregistrement de l'objet CORBA dans le service de noms
     nameRoot.rebind(nameToRegister,rootPOA.servant_to_reference(monAE));
-    System.out.println("==> Nom '"+ nomAE + "' est enregistre dans le service de noms.");
+    logs.log("info",nomAE + "' est enregistre dans le service de noms.");
 
     String IORServant = orb.object_to_string(rootPOA.servant_to_reference(monAE));
-    System.out.println("L'objet possede la reference suivante :");
-    System.out.println(IORServant);
+    logs.log("dev","L'objet possede la reference suivante :");
+    logs.log("dev",IORServant);
     
-    System.out.println("Attribution AC ... ("+nomAE+")");
-    String AC = "AC1";
-    switch(nomAE){
-    case "AE1": AC= "AC1";
-    break;
-    case "AE2": AC= "AC2";
-    break;
-    case "AE3": AC= "AC3";
-    break;
-    case "AE4": AC= "AC4";
-    break;
-    default : AC="AC1";
-    break; 
-    }
+    String nomAC = nomAE.replaceAll("AE", "AC");
     
-    System.out.println("demande de ratachement à l'"+AC+"...");
+        
+    logs.log("info","demande de ratachement à l'"+nomAC+"...");
     
  // Construction du nom a rechercher
     org.omg.CosNaming.NameComponent[] nameToFind = new org.omg.CosNaming.NameComponent[1];
-     nameToFind[0] = new org.omg.CosNaming.NameComponent(AC,"");
+     nameToFind[0] = new org.omg.CosNaming.NameComponent(nomAC,"");
 
     // Recherche aupres du naming service
     org.omg.CORBA.Object distantAC = nameRoot.resolve(nameToFind);
-    System.out.println("Objet '" + AC + "' trouve aupres du service de noms. IOR de l'objet :");
-    System.out.println(orb.object_to_string(distantAC));
+    logs.log("info","Objet '" + nomAC + "' trouve aupres du service de noms.");
+    logs.log("debug",orb.object_to_string(distantAC));
     monAC = ACHelper.narrow(distantAC);
+    
+    logs.log("dev","Shields online ;)");
     
     Thread t = new Thread(new Runnable(){
 		public void run(){
@@ -100,7 +91,7 @@ try {
 	
 	public boolean authentification (String login, String password){
 		
-		System.out.println(login+" demande à s'authentifier : OK");
+		logs.log("info",login+" demande à s'authentifier : OK");
 		return true;
 		
 	}
@@ -117,16 +108,18 @@ try {
 		Certificat cert=null;
 		try{
 			
-			System.out.println("#DEBUG1");
+			logs.log("debug","genererCertificat inside");
 			
 		String hash = Integer.toString(PubKey.hashCode());
-		System.out.println("#DEBUG1 hash =>"+hash);
+		logs.log("debug","hash =>"+hash);
         Signature sig = new Signature(hash);
-        System.out.println("#DEBUG1 Sig.hash =>"+sig.hash);
-        Date expir = new Date((short)2099,(short)1,(short)1,(short)1,(short)1,(short)1);
-        System.out.println("#DEBUG2");
+        logs.log("debug","Sig.hash =>"+sig.hash);
+        Calendar c = Calendar.getInstance();
+        
+        Date expir = new Date((short)(c.get(Calendar.YEAR+1)),(short)c.get(Calendar.MONTH),(short)c.get(Calendar.DAY_OF_MONTH),(short)c.get(Calendar.HOUR),(short)c.get(Calendar.MINUTE),(short)c.get(Calendar.SECOND));
+        logs.log("debug","Date expir :"+c.get(Calendar.YEAR+1));
         cert = monAC.generationCertificat(PubKey, expir, monAC,sig);
-        System.out.println("#DEBUG3");
+        logs.log("debug","monAC.generationCertificat");
         
 		}catch(Exception e){
 			e.printStackTrace();

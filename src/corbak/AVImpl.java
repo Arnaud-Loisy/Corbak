@@ -1,8 +1,8 @@
 package corbak;
 
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
 import java.util.ArrayList;
+
+import logs.logs;
 
 import org.omg.CORBA.Object;
 import org.omg.CosNaming.NamingContext;
@@ -15,6 +15,10 @@ public class AVImpl extends AVPOA{
 
 	public static void main(String[] args) {
 		try {
+			System.out.println("##################################################\t"+args[0]+"\t##################################################");
+			String nomAV = args[0];
+			//init certifs invalides.
+			revokCertif = new ArrayList<Certificat>();
 		    // Intialisation de l'ORB
 		    //************************
 		    final org.omg.CORBA.ORB orb = org.omg.CORBA.ORB.init(args,null);
@@ -43,35 +47,40 @@ public class AVImpl extends AVPOA{
 
 		    // Construction du nom a enregistrer
 		    org.omg.CosNaming.NameComponent[] nameToRegister = new org.omg.CosNaming.NameComponent[1];
-		    System.out.println("Sous quel nom voulez-vous enregistrer l'objet Corba ?");
-		    BufferedReader in = new BufferedReader(new InputStreamReader(System.in));
-		    String nomAE = in.readLine();
-		    nameToRegister[0] = new org.omg.CosNaming.NameComponent(nomAE,"");
+		    //System.out.println("Sous quel nom voulez-vous enregistrer l'objet Corba ?");
+		    //BufferedReader in = new BufferedReader(new InputStreamReader(System.in));
+		    //String nomAV = in.readLine();
+		    nameToRegister[0] = new org.omg.CosNaming.NameComponent(nomAV,"");
 
 		    // Enregistrement de l'objet CORBA dans le service de noms
 		    nameRoot.rebind(nameToRegister,rootPOA.servant_to_reference(monAV));
-		    System.out.println("==> Nom '"+ nomAE + "' est enregistre dans le service de noms.");
+		    logs.log("info",nomAV + "' est enregistre dans le service de noms.");
 
 		    String IORServant = orb.object_to_string(rootPOA.servant_to_reference(monAV));
-		    System.out.println("L'objet possede la reference suivante :");
-		    System.out.println(IORServant);
+		    logs.log("dev","L'objet possede la reference suivante :");
+		    logs.log("dev",IORServant);
 		    
 		    org.omg.CosNaming.NameComponent[] nameToFindAC = new org.omg.CosNaming.NameComponent[1];
-	         nameToFindAC[0] = new org.omg.CosNaming.NameComponent(nomAE.replaceAll("AE", "AV"),"");
+	         nameToFindAC[0] = new org.omg.CosNaming.NameComponent(nomAV.replaceAll("AV", "AC"),"");
 
 	        
 	        // Recherche aupres du naming service AV
 	        org.omg.CORBA.Object distantAC = nameRoot.resolve(nameToFindAC);
-	        System.out.println("Objet '" + nomAE.replaceAll("AE", "AC") + "' trouve aupres du service de noms. IOR de l'objet :");
-	        System.out.println(orb.object_to_string(distantAC));
+	        logs.log("info","Objet '" + nomAV.replaceAll("AV", "AC") + "' trouve aupres du service de noms. IOR de l'objet :");
+	        logs.log("debug",orb.object_to_string(distantAC));
 		    monAC = ACHelper.narrow(distantAC);
-		    
+		    Thread t = new Thread(new Runnable(){
+				public void run(){
+					orb.run();
+				}
+			});
+			t.start();
 		}
 		catch(Exception e){
 			e.printStackTrace();
 			
 		}
-		revokCertif = new ArrayList<Certificat>();
+		
 	}
 
 	@Override
@@ -85,7 +94,8 @@ public class AVImpl extends AVPOA{
 
 		for(int i=0; i<revokCertif.size();i++){
 			if(certificat.sign.hash.equals(revokCertif.get(i).sign.hash))
-				System.out.println("Ce certificat est révoqué");
+				logs.log("dev","Ce certificat est révoqué");
+			return false;
 		}
 		return monAC.verification(certificat.sign);
 	}
