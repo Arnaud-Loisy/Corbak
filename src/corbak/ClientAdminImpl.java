@@ -1,5 +1,6 @@
 package corbak;
 
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
@@ -11,24 +12,23 @@ import org.omg.CosNaming.NamingContext;
 import org.omg.PortableServer.POA;
 import org.omg.PortableServer.POAHelper;
 
-public class ClientImpl extends ClientPOA {
+public class ClientAdminImpl extends ClientPOA {
 	public static String PubKey;
 	public static AE monAE;
 	public static AV monAV;
 	public static Client monCorrespondant;
 	public static Certificat monCertif;
 	public static String from;
+	public static ArrayList<Certificat> listCert;
 
 	public void envoyerMessage(Message msg, Certificat certif) {
 
 		Calendar c = Calendar.getInstance();
 
-		if (certif.dateExpiration.year > c.get(Calendar.YEAR)) {
-			logs.log("debug", certif.dateExpiration.year+">"+c.get(Calendar.YEAR));
+		if (certif.dateExpiration.year < c.get(Calendar.YEAR)) {
 			logs.log("debug", "Certificat non expiré.");
 			try {
 				if (monAV.verification(certif)) {
-					logs.log("debug", "Certificat Validé par l'AC éméttrice");
 					System.out.println(from + " : " + msg.text);
 				}
 			} catch (certificatInvalide e) {
@@ -36,9 +36,8 @@ public class ClientImpl extends ClientPOA {
 				e.printStackTrace();
 			}
 			;
-		} else{
-			logs.log("debug", certif.dateExpiration.year+"<"+c.get(Calendar.YEAR));
-			logs.log("info", "Certificat expiré.");}
+		} else
+			logs.log("info", "Certificat expiré.");
 
 	}
 
@@ -46,7 +45,7 @@ public class ClientImpl extends ClientPOA {
 	public void envoyer(Certificat certif) {
 		Calendar c = Calendar.getInstance();
 
-		if (certif.dateExpiration.year > c.get(Calendar.YEAR)) {
+		if (certif.dateExpiration.year < c.get(Calendar.YEAR)) {
 			logs.log("dev", "Certificat non expiré.");
 		} else
 			logs.log("info", "Certificat expiré.");
@@ -68,7 +67,7 @@ public class ClientImpl extends ClientPOA {
 
 		try {
 			System.out
-					.println("##################################################\tclient\t##################################################");
+					.println("##################################################\tAdmin\t##################################################");
 			PubKey = genPubKey(128);
 
 			// Intialisation de l'orb
@@ -119,7 +118,7 @@ public class ClientImpl extends ClientPOA {
 			String pass = in.readLine();
 			while (!monAE.authentification(log, pass)){
 				
-				
+			
 				logs.log("info", "Login failed check your credentials");
 				
 				logs.log("info", "Login Client ?");
@@ -131,7 +130,7 @@ public class ClientImpl extends ClientPOA {
 			logs.log("info", "Login successful");
 			monCertif = monAE.genererCertificat(PubKey);
 			logs.log("dev", "Certificat généré et récupéré.");
-
+			
 			// Gestion du POA
 			// ****************
 			// Recuperation du POA
@@ -140,7 +139,7 @@ public class ClientImpl extends ClientPOA {
 
 			// Creation du servant
 			// *********************
-			ClientImpl monClient = new ClientImpl();
+			ClientAdminImpl monClient = new ClientAdminImpl();
 
 			// Activer le servant au sein du POA et recuperer son ID
 			byte[] monClientId = rootPOA.activate_object(monClient);
@@ -160,8 +159,7 @@ public class ClientImpl extends ClientPOA {
 					rootPOA.servant_to_reference(monClient));
 			logs.log("dev", log + " est enregistre dans l'annuaire.");
 
-			String IORServant = orb.object_to_string(rootPOA
-					.servant_to_reference(monClient));
+			String IORServant = orb.object_to_string(rootPOA.servant_to_reference(monClient));
 			logs.log("debug", "L'objet possede la reference suivante :");
 			logs.log("debug", IORServant);
 			Thread t = new Thread(new Runnable() {
@@ -171,45 +169,24 @@ public class ClientImpl extends ClientPOA {
 			});
 			t.start();
 
-			logs.clear();
-			logs.log("info", "Liste des clients disponibles");
-			logs.pagesJaunes(nameRoot, "clients");
+			//logs.clear();
+			//logs.log("info", "Liste des clients disponibles");
+			//logs.pagesJaunes(nameRoot, "clients");
 
 			// Saisie du nom de l'objet (si utilisation du service de nommage)
-			logs.log("info", "Qui voulez-vous contacter ?");
-
+			//logs.log("info", "Qui voulez-vous contacter ?");
+			logs.log("info", "Appuyez sur une touche pour révoquer votre certificat.");
+						
 			idObj = in.readLine();
-
-			// Recuperation du naming service
-			nameRoot = org.omg.CosNaming.NamingContextHelper.narrow(orb
-					.resolve_initial_references("NameService"));
-
-			// Construction du nom a rechercher
-			NameComponent[] nameToFindClient = new org.omg.CosNaming.NameComponent[1];
-			nameToFindClient[0] = new org.omg.CosNaming.NameComponent(idObj, "");
-
-			// Recherche aupres du naming service
-			org.omg.CORBA.Object distantClient = nameRoot
-					.resolve(nameToFindClient);
-			logs.log("info", idObj + " trouve aupres du service de noms.");
-			logs.log("debug", orb.object_to_string(distantClient));
-
-			// Utilisation directe de l'IOR (SAUF utilisation du service de
-			// nommage)
-			// org.omg.CORBA.Object distantEuro =
-			// orb.string_to_object("IOR:000000000000001b49444c3a436f6e766572746973736575722f4575726f3a312e30000000000001000000000000007c000102000000000d3137322e31362e39362e35340000cb630000001c00564201000000022f0020200000000400000000000002925225d3ea00000003564953030000000500070801ff000000000000000000000800000000564953000000000100000018000000000001000100000001050100010001010900000000");
-			// Casting de l'objet CORBA au type convertisseur euro
-			monCorrespondant = ClientHelper.narrow(distantClient);
-			while (true) {
-				System.out.print(log + " : ");
-				String message = in.readLine();
-
-				Signature sign = new Signature("hash");
-				Message msg = new Message(sign, message, false);
-				//monCorrespondant.envoyer(monCertif);
-				monCorrespondant.envoyerMessage(msg, monCertif);
-
+			
+			if(monAE.revocCertif(log, pass, monCertif))
+			{
+				logs.log("info", "Fin de revocation du certificat avec succès");
 			}
+			else logs.log("info", "Fin de revocation du certificat echouée");
+			
+
+		
 
 		} catch (Exception e) {
 			e.printStackTrace();

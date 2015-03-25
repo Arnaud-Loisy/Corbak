@@ -147,13 +147,14 @@ public class AEImpl extends AEPOA {
 			logs.log("debug", "Sig.hash =>" + sig.hash);
 			Calendar c = Calendar.getInstance();
 
-			Date expir = new Date((short) (c.get(Calendar.YEAR + 1)),
+			Date expir = new Date((short) (c.get(Calendar.YEAR)),
 					(short) c.get(Calendar.MONTH),
 					(short) c.get(Calendar.DAY_OF_MONTH),
 					(short) c.get(Calendar.HOUR),
 					(short) c.get(Calendar.MINUTE),
 					(short) c.get(Calendar.SECOND));
-			logs.log("debug", "Date expir :" + c.get(Calendar.YEAR + 1));
+			expir.year++;
+			logs.log("debug", "Date expir :" + expir.year);
 			cert = monAC.generationCertificat(PubKey, expir, nomAC, sig);
 			logs.log("debug", "monAC.generationCertificat");
 
