@@ -128,10 +128,15 @@ public class AEImpl extends AEPOA {
 	@Override
 	public boolean revocCertif(String login, String password, Certificat certif)
 			throws droitsInsufisants, certificatInvalide {
-		if(authentification(login,password))
+		if(authentification(login,password)){
+			logs.log("debug",login+" demande à revoquer son certificat... cela semble légitime");
 			return monAC.revocCertif(certif);
-		else
+		}
+		else{
+			logs.log("debug",login+" demande à revoquer son certificat... cela semble illégitime");
 			return false;
+		}
+			
 	}
 
 	@Override

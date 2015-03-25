@@ -29,9 +29,13 @@ public class logs {
 						if (!name[0].id.matches("A\\p{Upper}\\p{Digit}")) {
 							System.out.print("\t" + name[0].id);
 						}
-					} else if (type == "AE")
+					} else if (type == "AE"){
 						if (name[0].id.matches("AE\\p{Digit}")) {
 							System.out.print("\t" + name[0].id);
+						}}else if (type == "AV"){
+							if (name[0].id.matches("AV\\p{Digit}")) {
+								System.out.print("\t" + name[0].id);
+							}
 						}
 				}
 			}

@@ -124,10 +124,12 @@ public class ACImpl extends ACPOA {
 
 	public boolean revocCertif(Certificat cert) {
 		for (int i = 0; i < listCert.size(); i++) {
-			if (listCert.get(i).pubClef.equals( cert.pubClef))
+			if (listCert.get(i).pubClef.equals( cert.pubClef)){
 				listCert.remove(i);
-			logs.log("info", "Certif révoqué");
-			break;
+				logs.log("info", "Certif révoqué de la liste valide de "+nomAC);
+				break;
+			}
+				
 		}
 		
 		try {
@@ -140,11 +142,14 @@ public class ACImpl extends ACPOA {
 			org.omg.CORBA.Object distantAV = nameRoot.resolve(nameToFindAV);
 			logs.log("info", "Objet '" + nomAC.replaceAll("AC", "AV")
 					+ "' trouve aupres du service de noms.");
-			logs.log("debug", orb.object_to_string(distantAV));
+			logs.log("debug","la force ...");
+			logs.pagesJaunes(nameRoot, "AV");
+			//logs.log("debug", orb.object_to_string(distantAV)); WTF ?
+			logs.log("debug","un trouble surgit dans la force");
 			monAV = AVHelper.narrow(distantAV);
 			return monAV.revocCertif(cert);
 		} catch (NotFound | CannotProceed | InvalidName e) {
-			// TODO Auto-generated catch block
+			logs.log("debug", "AV not found ?");
 			e.printStackTrace();
 		}
 		return false;
@@ -166,7 +171,7 @@ public class ACImpl extends ACPOA {
 		for (int i = 0; i < listCert.size(); i++) {
 			;
 			if (sign.hash.equals(listCert.get(i).sign.hash)) {
-				logs.log("dev", "Valide");
+				logs.log("dev", "Certificat Valide");
 				return true;
 			}
 		}

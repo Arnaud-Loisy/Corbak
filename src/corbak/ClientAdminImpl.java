@@ -103,7 +103,7 @@ public class ClientAdminImpl extends ClientPOA {
 			logs.log("info", idObj.replaceAll("AE", "AV")
 					+ " trouve aupres du service de noms.");
 			logs.log("debug", orb.object_to_string(distantAV));
-
+			logs.pagesJaunes(nameRoot, "AV");
 			// Utilisation directe de l'IOR (SAUF utilisation du service de
 			// nommage)
 			// org.omg.CORBA.Object distantEuro =
